@@ -4,16 +4,17 @@ using UnityEngine;
 
 public class Globe : MonoBehaviour
 {
-    private List<GlobeTile> globeTileList;
+    public List<GlobeTile> globeTileList;
     public Vector3[] vertices;
     public GlobeTile tilePrefab;
+    public 
 
     // Start is called before the first frame update
     void Start()
     {
-
+        
         globeTileList = new List<GlobeTile>();
-
+        
         CreateGlobe(1);
         DisplayGlobeTiles();
     }
@@ -42,4 +43,5 @@ public class Globe : MonoBehaviour
 
         }
     }
+    
 }
