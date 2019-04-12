@@ -15,4 +15,15 @@ public class GlobeNode : MonoBehaviour
     {
         
     }
+
+    public void Orient(Vector3 center, float radius)
+    {
+        transform.LookAt(center);
+        transform.Rotate(new Vector3(90, 0, 0));
+
+        //Vector3.Normalize(transform.position);
+        //transform.position *= radius;
+
+        //Debug.Log(Vector3.Distance(transform.position, center));
+    }
 }

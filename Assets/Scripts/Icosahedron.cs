@@ -6,15 +6,19 @@ public class Icosahedron : MonoBehaviour
 {
 
     readonly float t = (1.0f + Mathf.Sqrt(5.0f)) / 2.0f;
+    readonly float radius = Mathf.Sqrt((5 + Mathf.Sqrt(5)) / 2);
+    public GlobeNode nodePrefab;
+    List<GlobeNode> nodeList;
     List<Vector3> vertexList;
     List<Vector3Int> triIndexList;
     // Start is called before the first frame update
     void Start()
     {
         InitPoints();
+        Tessellate();
         DisplayPoints();
         //DisplayTris();
-        
+        //Debug.Log(radius);
 
     }
 
@@ -43,6 +47,8 @@ public class Icosahedron : MonoBehaviour
             new Vector3(-t, 0, -1),
             new Vector3(-t, 0, 1)
         };
+
+        
 
         triIndexList = new List<Vector3Int>
         {
@@ -76,13 +82,23 @@ public class Icosahedron : MonoBehaviour
 
     void DisplayPoints()
     {
-        GameObject cube;
+
+        //GameObject cube;
+
+        //for (int i = 0; i < vertexList.Count; i++)
+        //{
+        //    cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //    cube.transform.localScale = new Vector3(.1f, .1f, .1f);
+        //    cube.transform.position = vertexList[i];
+        //}
+
+        nodeList = new List<GlobeNode>();
 
         for (int i = 0; i < vertexList.Count; i++)
         {
-            cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.transform.localScale = new Vector3(.1f, .1f, .1f);
-            cube.transform.position = vertexList[i];
+            nodeList.Add(Instantiate(nodePrefab));
+            nodeList[i].transform.position = vertexList[i];
+            nodeList[i].Orient(transform.position, radius);
         }
     }
 
@@ -93,7 +109,7 @@ public class Icosahedron : MonoBehaviour
         for (int i = 0; i < triIndexList.Count; i++)
         {
             //Debug.DrawLine(vertexList[triIndexList[i].x], vertexList[triIndexList[i].y], Color.blue, 100);
-            Debug.DrawLine(vertexList[triIndexList[i].y], vertexList[triIndexList[i].z], Color.red, 100);
+            //Debug.DrawLine(vertexList[triIndexList[i].y], vertexList[triIndexList[i].z], Color.red, 100);
             Debug.DrawLine(vertexList[triIndexList[i].z], vertexList[triIndexList[i].x], Color.green, 100);
         }
 
@@ -101,7 +117,28 @@ public class Icosahedron : MonoBehaviour
 
     void Tessellate()
     {
+        List<Vector3Int> newTriIndexList = new List<Vector3Int>();
 
+        Vector3 midpointXY;
+        Vector3 midpointYZ;
+        Vector3 midpointZX;
 
+        for (int i = 0; i < triIndexList.Count; i++)
+        {
+            midpointXY = (((vertexList[triIndexList[i].x] + vertexList[triIndexList[i].y]) / 2).normalized) * radius;
+            midpointYZ = (((vertexList[triIndexList[i].y] + vertexList[triIndexList[i].z]) / 2).normalized) * radius;
+            midpointZX = (((vertexList[triIndexList[i].z] + vertexList[triIndexList[i].x]) / 2).normalized) * radius;
+
+            vertexList.Add(midpointXY); //Count - 2
+            vertexList.Add(midpointYZ); //Count - 1
+            vertexList.Add(midpointZX); //Count
+
+            newTriIndexList.Add(new Vector3Int(triIndexList[i].x, vertexList.Count - 2, vertexList.Count));
+            newTriIndexList.Add(new Vector3Int(vertexList.Count - 2, triIndexList[i].y, vertexList.Count - 1));
+            newTriIndexList.Add(new Vector3Int(vertexList.Count, vertexList.Count - 1, triIndexList[i].z));
+            newTriIndexList.Add(new Vector3Int(vertexList.Count - 2, vertexList.Count - 1, vertexList.Count));
+        }
+
+        triIndexList = newTriIndexList;
     }
 }
