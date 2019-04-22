@@ -98,7 +98,7 @@ public class Icosahedron : MonoBehaviour
         {
             nodeList.Add(Instantiate(nodePrefab));
             nodeList[i].transform.position = vertexList[i];
-            nodeList[i].Orient(transform.position, radius);
+            nodeList[i].Orient(transform.position, radius, i);
         }
     }
 
@@ -118,10 +118,15 @@ public class Icosahedron : MonoBehaviour
     void Tessellate()
     {
         List<Vector3Int> newTriIndexList = new List<Vector3Int>();
+        List<Vector3> newVertexList = new List<Vector3>();
 
         Vector3 midpointXY;
         Vector3 midpointYZ;
         Vector3 midpointZX;
+
+        int indexXY;
+        int indexYZ;
+        int indexZX;
 
         for (int i = 0; i < triIndexList.Count; i++)
         {
@@ -129,16 +134,77 @@ public class Icosahedron : MonoBehaviour
             midpointYZ = (((vertexList[triIndexList[i].y] + vertexList[triIndexList[i].z]) / 2).normalized) * radius;
             midpointZX = (((vertexList[triIndexList[i].z] + vertexList[triIndexList[i].x]) / 2).normalized) * radius;
 
-            vertexList.Add(midpointXY); //Count - 2
-            vertexList.Add(midpointYZ); //Count - 1
-            vertexList.Add(midpointZX); //Count
+            indexXY = -1;
+            indexYZ = -1;
+            indexZX = -1;
 
-            newTriIndexList.Add(new Vector3Int(triIndexList[i].x, vertexList.Count - 2, vertexList.Count));
-            newTriIndexList.Add(new Vector3Int(vertexList.Count - 2, triIndexList[i].y, vertexList.Count - 1));
-            newTriIndexList.Add(new Vector3Int(vertexList.Count, vertexList.Count - 1, triIndexList[i].z));
-            newTriIndexList.Add(new Vector3Int(vertexList.Count - 2, vertexList.Count - 1, vertexList.Count));
+            for (int j = 0; j < newVertexList.Count; j++)
+            {
+                if (midpointXY == newVertexList[j])
+                {
+                    indexXY = j;
+
+                    newVertexList.Add(midpointYZ);
+                    indexYZ = newVertexList.Count;
+
+                    newVertexList.Add(midpointZX);
+                    indexZX = newVertexList.Count;
+
+                    Debug.Log("Duplicate Found at " + midpointXY);
+                    break;
+                }
+                else if (midpointYZ == newVertexList[j])
+                {
+                    newVertexList.Add(midpointXY);
+                    indexXY = newVertexList.Count;
+
+                    indexYZ = j;
+
+                    newVertexList.Add(midpointZX);
+                    indexZX = newVertexList.Count;
+
+                    Debug.Log("Duplicate Found at " + midpointYZ);
+                    break;
+                }
+                else if (midpointZX == newVertexList[j])
+                {
+                    newVertexList.Add(midpointXY);
+                    indexXY = newVertexList.Count;
+
+                    newVertexList.Add(midpointYZ);
+                    indexYZ = newVertexList.Count;
+
+                    indexZX = j;
+
+                    Debug.Log("Duplicate Found at " + midpointZX);
+                    break;
+                }
+            }
+
+            if (indexXY == -1)
+            {
+                newVertexList.Add(midpointXY);
+                indexXY = newVertexList.Count;
+
+                newVertexList.Add(midpointYZ);
+                indexYZ = newVertexList.Count;
+
+                newVertexList.Add(midpointZX);
+                indexZX = newVertexList.Count;
+            }
+
+            //vertexList.Add(midpointXY); //Count - 2
+            //vertexList.Add(midpointYZ); //Count - 1
+            //vertexList.Add(midpointZX); //Count
+
+            newTriIndexList.Add(new Vector3Int(triIndexList[i].x, indexXY, indexZX));
+            newTriIndexList.Add(new Vector3Int(indexXY, triIndexList[i].y, indexYZ));
+            newTriIndexList.Add(new Vector3Int(indexZX, indexYZ, triIndexList[i].z));
+            newTriIndexList.Add(new Vector3Int(indexXY, indexYZ, indexZX));
         }
 
+        vertexList.AddRange(newVertexList);
         triIndexList = newTriIndexList;
+
     }
 }
