@@ -5,11 +5,13 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     float cameraRadius;
+    GameObject globeCamera;
 
     // Start is called before the first frame update
     void Start()
     {
-        cameraRadius = Vector3.Distance(transform.position, new Vector3());
+        globeCamera = gameObject.transform.GetChild(0).gameObject;
+        cameraRadius = Vector3.Distance(transform.position, globeCamera.transform.position);
     }
 
     // Update is called once per frame
@@ -24,10 +26,10 @@ public class CameraController : MonoBehaviour
             if (cameraRadius > 10)
                 cameraRadius = 10;
 
-            transform.position = transform.position.normalized * cameraRadius;
+            globeCamera.transform.position = globeCamera.transform.position.normalized * cameraRadius;
             
         }
-        /**
+        
         if (Input.GetMouseButton(0))
         {
             float x = 8f * Input.GetAxis("Mouse X");
@@ -36,13 +38,10 @@ public class CameraController : MonoBehaviour
             if (transform.eulerAngles.z + y <= 0.1f || transform.eulerAngles.z + y >= 179.9f)
                 y = 0;
 
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + x, transform.eulerAngles.z + y);
-            
-            
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x + y, transform.eulerAngles.y + x, transform.eulerAngles.z);
 
-        }**/
-
-
-
+            globeCamera.transform.rotation = Quaternion.Euler(globeCamera.transform.rotation.x, globeCamera.transform.rotation.y, 0);
+            //globeCamera.transform.LookAt(transform.position);
+        }
     }
 }

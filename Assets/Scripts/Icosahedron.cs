@@ -99,6 +99,7 @@ public class Icosahedron : MonoBehaviour
             nodeList.Add(Instantiate(nodePrefab));
             nodeList[i].transform.position = vertexList[i];
             nodeList[i].Orient(transform.position, radius, i);
+            nodeList[i].GetComponent<CapsuleCollider>().enabled = false;
         }
     }
 
