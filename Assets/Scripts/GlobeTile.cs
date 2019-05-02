@@ -106,6 +106,7 @@ public class GlobeTile : MonoBehaviour
         mesh.triangles = tri;
         mesh.normals = normals;
         mesh.uv = uv;
-        GetComponent<Renderer>().material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+        //GetComponent<Renderer>().material.
+        //    = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
     }
 }
