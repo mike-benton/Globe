@@ -102,7 +102,7 @@ public class GlobeNode : MonoBehaviour
 
     public void Orient(Vector3 center, float radius, int generation)
     {
-        transform.position = transform.position.normalized * radius;
+        transform.position = transform.position.normalized * radius * .98f;
         transform.LookAt(center);
         transform.Rotate(new Vector3(90, 0, 0));
     }
