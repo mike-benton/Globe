@@ -67,3 +67,7 @@ Illusionist - (Wizard + Bard) One who flings arcane spells of trickery and decep
 Mimic - (Bard + Druid) One who learns abilities from the creatures they face.
 
 Witch Doctor - (Cleric + Shaman) One who harnesses the healing properties of the elements.
+
+## Prestige Classes (To be expanded at a later date)
+
+Knight (Fighter), Berserker (Barbarian), Master (Monk), Samurai (Duelist), Assassin (Rogue), Sniper (Hunter), Necromancer (Warlock), Archmage (Wizard), Jack of all Trades (Bard), Saint (Cleric), Archdruid (Druid), Summoner (Shaman)
