@@ -8,7 +8,10 @@ With enough skills, the adventurers may begin to pick up skills of the neighbori
 
 I am implementing the Globe system using the Unity Engine.
 Currently, I am in the process of constructing the multilinked list that is the truncated icosohedron.
-Once I finish the tessellation algorithm, I will 
+Once I finish the tessellation algorithm, I will add abilities of each class to the sphere.
+
+![Globe](https://people.rit.edu/mxb3183/images/globepic.jpg "Globe with one tessellation")
+Globe with one tessellation
 
 
 ## Core Physical Classes
