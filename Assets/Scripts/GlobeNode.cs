@@ -8,9 +8,10 @@ public class GlobeNode : MonoBehaviour
     public string text;
     public Globe globe;
     public GlobeNode nodePrefab;
-    public GlobeNode[] neighbors;
+    public List<GlobeNode> neighbors;
     public List<GlobeNode> newNeighbors = new List<GlobeNode>();
     public List<GlobeNode> newNeighbors2 = new List<GlobeNode>();
+    public int listIndex;
 
 
     // Start is called before the first frame update
@@ -30,65 +31,64 @@ public class GlobeNode : MonoBehaviour
     private void OnMouseOver()
     {
         gameObject.GetComponentInChildren<TextMesh>().text = text;
-        for (int i = 0; i < newNeighbors.Count; i++)
+        for (int i = 0; i < neighbors.Count; i++)
         {
-            /**
-            if (i == 0) { newNeighbors[i].transform.GetComponent<MeshRenderer>().material.color = Color.red; }
-            if (i == 1) { newNeighbors[1].transform.GetComponent<MeshRenderer>().material.color = Color.yellow; }
-            if (i == 2) { newNeighbors[2].transform.GetComponent<MeshRenderer>().material.color = Color.green; }
-            if (i == 3) { newNeighbors[3].transform.GetComponent<MeshRenderer>().material.color = Color.blue; }
-            if (i == 4) { newNeighbors[4].transform.GetComponent<MeshRenderer>().material.color = Color.magenta; }**/
-            newNeighbors[i].gameObject.GetComponentInChildren<TextMesh>().text = "" + i;
-
-            /**
-            if (i == 0) { newNeighbors[i].transform.GetComponent<MeshRenderer>().material.color = Color.red; }
-            if (i == 1) { newNeighbors[1].transform.GetComponent<MeshRenderer>().material.color = Color.yellow; }
-            if (i == 2) { newNeighbors[2].transform.GetComponent<MeshRenderer>().material.color = Color.green; }
-            if (i == 3) { newNeighbors[3].transform.GetComponent<MeshRenderer>().material.color = Color.blue; }
-            if (i == 4) { newNeighbors[4].transform.GetComponent<MeshRenderer>().material.color = Color.magenta; }**/
+            neighbors[i].gameObject.GetComponentInChildren<TextMesh>().text = "" + i; //sets neighbors text to their neighbor index of this node
+            //neighbors[i].gameObject.GetComponentInChildren<TextMesh>().text = "" + i;
         }
-
-        //foreach (GlobeNode node in newNeighbors)
-        //{
-        //    node.transform.GetComponent<MeshRenderer>().material.color = Color.cyan;
-        //}
     }
 
     private void OnMouseExit()
     {
         gameObject.GetComponentInChildren<TextMesh>().text = "";
-        foreach (GlobeNode node in newNeighbors)
+        foreach (GlobeNode node in neighbors)
         {
-            //node.transform.GetComponent<MeshRenderer>().material.color = Color.white;
-            node.gameObject.GetComponentInChildren<TextMesh>().text = "";
+            node.gameObject.GetComponentInChildren<TextMesh>().text = ""; //clears text set by OnMouseOver
         }
     }
 
     public void Tessellate() //Only called by neighbors if hasTessellated = false
     {
+        
+
         hasTessellated = true;
 
-        for (int i = 0; i < neighbors.Length; i++)
+        for (int i = 0; i < neighbors.Count; i++)
         {
             if (!neighbors[i].hasTessellated) {
-                
+
 
                 GlobeNode newNode = Instantiate(nodePrefab, GetComponentInParent<Globe>().transform);
-                //newNode.neighbors = new GlobeNode[6];
+                
                 newNode.transform.position = (transform.position + neighbors[i].transform.position) / 2;
                 newNode.Orient(new Vector3(), GetComponentInParent<Globe>().radius, 1);
                 newNode.text = "";
+                newNode.listIndex = -1;
 
+                newNode.newNeighbors = new List<GlobeNode>(6) //gives the baby node two neighbors it needs to succeed in life
+                {
+                    this, neighbors[i]
+                };
+
+
+                GetComponentInParent<Globe>().globeNodeList.Add(newNode);
                 newNeighbors.Add(newNode);
                 neighbors[i].newNeighbors2.Add(newNode);
 
-
-                //newNode.newNeighbors.Add(this);
-                //newNode.newNeighbors.Add(newNeighbors[i]);
+                
             }
         }
 
-        for (int i = 0; i < neighbors.Length; i++)
+        OrganizeNeighbors();
+
+        AssignNeighborsNeighbors();
+
+
+        
+
+
+
+        for (int i = 0; i < neighbors.Count; i++)
         {
             if (!neighbors[i].hasTessellated)
             {
@@ -96,7 +96,6 @@ public class GlobeNode : MonoBehaviour
             }
         }
 
-        OrganizeNeighbors();
     }
 
 
@@ -109,46 +108,54 @@ public class GlobeNode : MonoBehaviour
 
     void OrganizeNeighbors()
     {
-        text += "(" + newNeighbors.Count + ", " + newNeighbors2.Count + ")";
-        
-        if (newNeighbors.Count == 3)
+        if (neighbors.Count == 5)
         {
-            newNeighbors.Add(newNeighbors2[1]);
-            newNeighbors.Add(newNeighbors2[0]);
-        }
-        else if (newNeighbors.Count == 2)
-        {
-            newNeighbors.Add(newNeighbors2[2]);
-            newNeighbors.Add(newNeighbors2[0]);
-            newNeighbors.Add(newNeighbors2[1]);
-        }
-        else if (newNeighbors.Count == 1)
-        {
-            newNeighbors.Add(newNeighbors2[3]);
-            newNeighbors.Add(newNeighbors2[0]);
-            newNeighbors.Add(newNeighbors2[1]);
-            newNeighbors.Add(newNeighbors2[2]);
+            text += "(" + newNeighbors.Count + ", " + newNeighbors2.Count + ")";
+
+            if (newNeighbors.Count == 3)
+            {
+                newNeighbors.Add(newNeighbors2[1]);
+                newNeighbors.Add(newNeighbors2[0]);
+            }
+            else if (newNeighbors.Count == 2)
+            {
+                newNeighbors.Add(newNeighbors2[2]);
+                newNeighbors.Add(newNeighbors2[0]);
+                newNeighbors.Add(newNeighbors2[1]);
+            }
+            else if (newNeighbors.Count == 1)
+            {
+                newNeighbors.Add(newNeighbors2[3]);
+                newNeighbors.Add(newNeighbors2[0]);
+                newNeighbors.Add(newNeighbors2[1]);
+                newNeighbors.Add(newNeighbors2[2]);
+            }
+            else
+            {
+                newNeighbors.AddRange(newNeighbors2);
+            }
         }
         else
         {
             newNeighbors.AddRange(newNeighbors2);
-        }
 
-        /**
-        for (int i = 0; i < newNeighbors2.Count - 1; i++)
-        {
-            newNeighbors.Add(newNeighbors2[i + 1]);
         }
-        if (newNeighbors2.Count > 0)
-        {
-            newNeighbors.Add(newNeighbors2[0]);
-        }**/
-
-        //newNeighbors.AddRange(newNeighbors2);
+        
     }
 
     void AssignNeighborsNeighbors()
     {
-        
+        newNeighbors[0].newNeighbors.Add(newNeighbors[newNeighbors.Count-1]);
+        newNeighbors[0].newNeighbors.Add(newNeighbors[1]);
+
+        for (int i = 1; i < newNeighbors.Count - 1; i++)
+        {
+            newNeighbors[i].newNeighbors.Add(newNeighbors[i - 1]);
+            newNeighbors[i].newNeighbors.Add(newNeighbors[i + 1]);
+        }
+
+        newNeighbors[newNeighbors.Count-1].newNeighbors.Add(newNeighbors[newNeighbors.Count-2]);
+        newNeighbors[newNeighbors.Count-1].newNeighbors.Add(newNeighbors[0]);
+
     }
 }

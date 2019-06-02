@@ -9,6 +9,7 @@ public class Globe : MonoBehaviour
     public GlobeNode nodePrefab;
 
     public List<GlobeNode> globeNodeList;
+    public List<GlobeNode> newNodeList;
     //public Vector3[] vertexArr;
 
     // Start is called before the first frame update
@@ -17,6 +18,11 @@ public class Globe : MonoBehaviour
         InitPoints();
         AssignInitialNeighbors();
         Tessellate();
+        CleanUp();
+
+        //Tessellate();
+        //CleanUp();
+
     }
 
     // Update is called once per frame
@@ -53,7 +59,7 @@ public class Globe : MonoBehaviour
 
             newNode.transform.position = vertexArr[i];
             newNode.Orient(transform.position, radius, 0);
-            //newNode.transform.parent = transform;
+            newNode.listIndex = i;
             newNode.text = "Node " + i;
             globeNodeList.Add(newNode);
         }
@@ -61,23 +67,48 @@ public class Globe : MonoBehaviour
 
     void AssignInitialNeighbors()
     {
-        globeNodeList[0].neighbors = new GlobeNode[] { globeNodeList[1], globeNodeList[7], globeNodeList[10], globeNodeList[11], globeNodeList[5] };
-        globeNodeList[1].neighbors = new GlobeNode[] { globeNodeList[0], globeNodeList[5], globeNodeList[9], globeNodeList[8], globeNodeList[7] };
-        globeNodeList[2].neighbors = new GlobeNode[] { globeNodeList[10], globeNodeList[6], globeNodeList[3], globeNodeList[4], globeNodeList[11] };
-        globeNodeList[3].neighbors = new GlobeNode[] { globeNodeList[6], globeNodeList[8], globeNodeList[9], globeNodeList[4], globeNodeList[2] };
-        globeNodeList[4].neighbors = new GlobeNode[] { globeNodeList[11], globeNodeList[2], globeNodeList[3], globeNodeList[9], globeNodeList[5] };
-        globeNodeList[5].neighbors = new GlobeNode[] { globeNodeList[0], globeNodeList[11], globeNodeList[4], globeNodeList[9], globeNodeList[1] };
-        globeNodeList[6].neighbors = new GlobeNode[] { globeNodeList[8], globeNodeList[3], globeNodeList[2], globeNodeList[10], globeNodeList[7] };
-        globeNodeList[7].neighbors = new GlobeNode[] { globeNodeList[1], globeNodeList[8], globeNodeList[6], globeNodeList[10], globeNodeList[0] };
-        globeNodeList[8].neighbors = new GlobeNode[] { globeNodeList[1], globeNodeList[9], globeNodeList[3], globeNodeList[6], globeNodeList[7] };
-        globeNodeList[9].neighbors = new GlobeNode[] { globeNodeList[5], globeNodeList[4], globeNodeList[3], globeNodeList[8], globeNodeList[1] };
-        globeNodeList[10].neighbors = new GlobeNode[] { globeNodeList[7], globeNodeList[6], globeNodeList[2], globeNodeList[11], globeNodeList[0] };
-        globeNodeList[11].neighbors = new GlobeNode[] { globeNodeList[10], globeNodeList[2], globeNodeList[4], globeNodeList[5], globeNodeList[0] };
-        
+        globeNodeList[0].neighbors = new List<GlobeNode>(5) { globeNodeList[1], globeNodeList[7], globeNodeList[10], globeNodeList[11], globeNodeList[5] };
+        globeNodeList[1].neighbors = new List<GlobeNode>(5) { globeNodeList[0], globeNodeList[5], globeNodeList[9], globeNodeList[8], globeNodeList[7] };
+        globeNodeList[2].neighbors = new List<GlobeNode>(5) { globeNodeList[10], globeNodeList[6], globeNodeList[3], globeNodeList[4], globeNodeList[11] };
+        globeNodeList[3].neighbors = new List<GlobeNode>(5) { globeNodeList[6], globeNodeList[8], globeNodeList[9], globeNodeList[4], globeNodeList[2] };
+        globeNodeList[4].neighbors = new List<GlobeNode>(5) { globeNodeList[11], globeNodeList[2], globeNodeList[3], globeNodeList[9], globeNodeList[5] };
+        globeNodeList[5].neighbors = new List<GlobeNode>(5) { globeNodeList[0], globeNodeList[11], globeNodeList[4], globeNodeList[9], globeNodeList[1] };
+        globeNodeList[6].neighbors = new List<GlobeNode>(5) { globeNodeList[8], globeNodeList[3], globeNodeList[2], globeNodeList[10], globeNodeList[7] };
+        globeNodeList[7].neighbors = new List<GlobeNode>(5) { globeNodeList[1], globeNodeList[8], globeNodeList[6], globeNodeList[10], globeNodeList[0] };
+        globeNodeList[8].neighbors = new List<GlobeNode>(5) { globeNodeList[1], globeNodeList[9], globeNodeList[3], globeNodeList[6], globeNodeList[7] };
+        globeNodeList[9].neighbors = new List<GlobeNode>(5) { globeNodeList[5], globeNodeList[4], globeNodeList[3], globeNodeList[8], globeNodeList[1] };
+        globeNodeList[10].neighbors = new List<GlobeNode>(5) { globeNodeList[7], globeNodeList[6], globeNodeList[2], globeNodeList[11], globeNodeList[0] };
+        globeNodeList[11].neighbors = new List<GlobeNode>(5) { globeNodeList[10], globeNodeList[2], globeNodeList[4], globeNodeList[5], globeNodeList[0] };
     }
 
     void Tessellate()
     {
         globeNodeList[0].Tessellate();
+    }
+
+    void CleanUp()
+    {
+        
+        for (int i = 0; i < globeNodeList.Count; i++)
+        {
+            if (globeNodeList[i].listIndex == -1)
+            {
+                globeNodeList[i].listIndex = i;
+
+                globeNodeList[i].newNeighbors = new List<GlobeNode>(6)
+                {
+                    globeNodeList[i].newNeighbors[0],
+                    globeNodeList[i].newNeighbors[2],
+                    globeNodeList[i].newNeighbors[5],
+                    globeNodeList[i].newNeighbors[1],
+                    globeNodeList[i].newNeighbors[4],
+                    globeNodeList[i].newNeighbors[3]
+                };
+            }
+
+            globeNodeList[i].neighbors = globeNodeList[i].newNeighbors;
+            globeNodeList[i].newNeighbors = new List<GlobeNode>();
+            globeNodeList[i].newNeighbors2 = new List<GlobeNode>();
+        }
     }
 }
