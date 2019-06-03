@@ -123,7 +123,6 @@ GameObject:
   - component: {fileID: 55258319}
   - component: {fileID: 55258318}
   - component: {fileID: 55258317}
-  - component: {fileID: 55258316}
   - component: {fileID: 55258320}
   m_Layer: 0
   m_Name: DragCamera
@@ -132,26 +131,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &55258316
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 55258315}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 137d5bce09ffd4e4fb7c0d300e6470fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  distance: 5
-  xSpeed: 120
-  ySpeed: 120
-  yMinLimit: -20
-  yMaxLimit: 80
-  distanceMin: 0.5
-  distanceMax: 15
 --- !u!81 &55258317
 AudioListener:
   m_ObjectHideFlags: 0
@@ -231,13 +210,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2129615032}
-  distance: 2
+  distance: 3
   xSpeed: 10
   ySpeed: 15
   yMinLimit: -360
   yMaxLimit: 360
-  distanceMin: 5
-  distanceMax: 10
+  distanceMin: 2
+  distanceMax: 8
   smoothTime: 8
 --- !u!1 &170076733
 GameObject:
@@ -375,6 +354,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6822161823321632742, guid: 8fbd634d1d429a04aa42ca8f266dab6e,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6822161823321632742, guid: 8fbd634d1d429a04aa42ca8f266dab6e,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6822161823321632742, guid: 8fbd634d1d429a04aa42ca8f266dab6e,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3.7
+      objectReference: {fileID: 0}
     - target: {fileID: 6316679765771349676, guid: 8fbd634d1d429a04aa42ca8f266dab6e,
         type: 3}
       propertyPath: m_Enabled
@@ -385,6 +379,16 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 1ed3431a14dd7354faad6ef3ee7bcacd, type: 2}
+    - target: {fileID: 5514990201734861710, guid: 8fbd634d1d429a04aa42ca8f266dab6e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5702767612550115611, guid: 8fbd634d1d429a04aa42ca8f266dab6e,
+        type: 3}
+      propertyPath: numTessellations
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8fbd634d1d429a04aa42ca8f266dab6e, type: 3}
 --- !u!1 &1780640705

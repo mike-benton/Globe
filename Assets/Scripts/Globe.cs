@@ -7,9 +7,11 @@ public class Globe : MonoBehaviour
     public readonly float t = (1.0f + Mathf.Sqrt(5.0f)) / 2.0f;
     public readonly float radius = Mathf.Sqrt((5 + Mathf.Sqrt(5)) / 2);
     public GlobeNode nodePrefab;
+    public int numTessellations = 0;
 
     public List<GlobeNode> globeNodeList;
     public List<GlobeNode> newNodeList;
+
     //public Vector3[] vertexArr;
 
     // Start is called before the first frame update
@@ -17,12 +19,7 @@ public class Globe : MonoBehaviour
     {
         InitPoints();
         AssignInitialNeighbors();
-        Tessellate();
-        CleanUp();
-
-        //Tessellate();
-        //CleanUp();
-
+        Tessellate(numTessellations);
     }
 
     // Update is called once per frame
@@ -58,9 +55,9 @@ public class Globe : MonoBehaviour
             GlobeNode newNode = Instantiate(nodePrefab, transform);
 
             newNode.transform.position = vertexArr[i];
+            newNode.transform.localScale /= (Mathf.Pow(numTessellations, 2) + 1);
             newNode.Orient(transform.position, radius, 0);
             newNode.listIndex = i;
-            newNode.text = "Node " + i;
             globeNodeList.Add(newNode);
         }
     }
@@ -81,9 +78,14 @@ public class Globe : MonoBehaviour
         globeNodeList[11].neighbors = new List<GlobeNode>(5) { globeNodeList[10], globeNodeList[2], globeNodeList[4], globeNodeList[5], globeNodeList[0] };
     }
 
-    void Tessellate()
+    void Tessellate(int times)
     {
-        globeNodeList[0].Tessellate();
+        for (int i = 0; i < times; i++)
+        {
+            globeNodeList[0].Tessellate();
+            CleanUp();
+        }
+
     }
 
     void CleanUp()
@@ -106,6 +108,8 @@ public class Globe : MonoBehaviour
                 };
             }
 
+            globeNodeList[i].hasTessellated = false;
+            globeNodeList[i].name = "Node " + i;
             globeNodeList[i].neighbors = globeNodeList[i].newNeighbors;
             globeNodeList[i].newNeighbors = new List<GlobeNode>();
             globeNodeList[i].newNeighbors2 = new List<GlobeNode>();
